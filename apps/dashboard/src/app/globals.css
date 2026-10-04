@@ -1,0 +1,812 @@
+﻿
+:root {
+  --bg: #070909;
+  --surface: #0b0e0d;
+  --surface-2: #101412;
+  --line: rgba(255, 255, 255, 0.09);
+  --muted: #737b76;
+  --text: #f2f5f3;
+  --signal: #a7ff4f;
+  --signal-soft: rgba(167, 255, 79, 0.12);
+  --danger: #ff654f;
+  --warning: #ffbf47;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(
+      circle at 75% 0%,
+      rgba(167, 255, 79, 0.07),
+      transparent 26rem
+    ),
+    var(--bg);
+  color: var(--text);
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.shell {
+  min-height: 100vh;
+  width: min(1600px, 100%);
+  margin: 0 auto;
+  padding: 0 28px 40px;
+}
+
+.topbar {
+  height: 84px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+}
+
+.brandLockup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mark {
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--signal);
+  display: grid;
+  place-items: center;
+  color: var(--signal);
+  font-weight: 900;
+  font-size: 22px;
+}
+
+.brand {
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+}
+
+.productName {
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  margin-top: 3px;
+}
+
+.systemStatus {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--signal);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.pulse {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--signal);
+  box-shadow: 0 0 14px var(--signal);
+}
+
+.hero {
+  min-height: 340px;
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 80px;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+}
+
+.eyebrow {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  font-size: clamp(42px, 5vw, 76px);
+  line-height: 0.96;
+  letter-spacing: -0.055em;
+  margin: 18px 0 22px;
+  max-width: 900px;
+}
+
+.hero h1 span {
+  color: var(--signal);
+}
+
+.hero p {
+  color: #969d98;
+  line-height: 1.65;
+  font-size: 15px;
+  max-width: 630px;
+}
+
+.heroStats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--line);
+}
+
+.metric {
+  min-height: 130px;
+  padding: 22px;
+  border-right: 1px solid var(--line);
+}
+
+.metric:last-child {
+  border-right: 0;
+}
+
+.metricValue {
+  font-size: 38px;
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  margin-top: 20px;
+}
+
+.metricDetail {
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 5px;
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: 1.55fr 0.75fr;
+  min-height: 610px;
+  border-bottom: 1px solid var(--line);
+}
+
+.conversationPanel {
+  padding: 30px 32px 30px 0;
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+}
+
+.intelligencePanel {
+  padding: 30px 0 30px 32px;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.panelHeader h2,
+.pipelinePanel h2 {
+  font-size: 24px;
+  margin: 7px 0 0;
+  letter-spacing: -0.03em;
+}
+
+.ghostButton {
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  padding: 9px 12px;
+  font-size: 9px;
+  letter-spacing: 0.12em;
+}
+
+.ghostButton:hover {
+  border-color: var(--signal);
+  color: var(--signal);
+}
+
+.emptyConversation {
+  flex: 1;
+  min-height: 380px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.signalOrb {
+  width: 84px;
+  height: 84px;
+  border: 1px solid rgba(167, 255, 79, 0.35);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  box-shadow:
+    0 0 60px rgba(167, 255, 79, 0.08),
+    inset 0 0 30px rgba(167, 255, 79, 0.05);
+}
+
+.signalCore {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--signal);
+  box-shadow: 0 0 24px var(--signal);
+}
+
+.emptyConversation h3 {
+  margin: 26px 0 8px;
+  font-size: 20px;
+}
+
+.emptyConversation p {
+  color: var(--muted);
+  max-width: 440px;
+  line-height: 1.6;
+  font-size: 13px;
+}
+
+.scenarioRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.scenarioRow button {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: #aab0ac;
+  padding: 10px 14px;
+  font-size: 11px;
+}
+
+.scenarioRow button:hover {
+  border-color: var(--signal);
+  color: var(--signal);
+}
+
+.messages {
+  flex: 1;
+  padding: 34px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow-y: auto;
+  max-height: 430px;
+}
+
+.message {
+  width: min(78%, 650px);
+  padding: 16px 18px;
+  line-height: 1.55;
+  font-size: 14px;
+}
+
+.message.customer {
+  align-self: flex-start;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+}
+
+.message.agent {
+  align-self: flex-end;
+  background: var(--signal-soft);
+  border: 1px solid rgba(167, 255, 79, 0.2);
+}
+
+.messageRole {
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.message.agent .messageRole {
+  color: var(--signal);
+}
+
+.composer {
+  height: 64px;
+  border: 1px solid var(--line);
+  display: flex;
+  background: var(--surface);
+}
+
+.composer input {
+  flex: 1;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text);
+  padding: 0 18px;
+  min-width: 0;
+}
+
+.composer input::placeholder {
+  color: #505651;
+}
+
+.composer button {
+  width: 130px;
+  border: 0;
+  border-left: 1px solid var(--line);
+  background: var(--signal);
+  color: #091006;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.urgency {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 25px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  font-weight: 900;
+}
+
+.urgencyDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--muted);
+}
+
+.urgency-emergency {
+  color: var(--danger);
+  border-color: rgba(255, 101, 79, 0.35);
+}
+
+.urgency-emergency .urgencyDot {
+  background: var(--danger);
+  box-shadow: 0 0 12px var(--danger);
+}
+
+.urgency-urgent {
+  color: var(--warning);
+}
+
+.urgency-urgent .urgencyDot {
+  background: var(--warning);
+}
+
+.urgency-routine {
+  color: var(--signal);
+}
+
+.urgency-routine .urgencyDot {
+  background: var(--signal);
+}
+
+.money {
+  font-size: 76px;
+  font-weight: 700;
+  letter-spacing: -0.07em;
+  margin-top: 32px;
+}
+
+.moneyLabel {
+  color: var(--muted);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  font-weight: 800;
+}
+
+.scoreTrack {
+  height: 3px;
+  background: #202522;
+  margin-top: 32px;
+}
+
+.scoreFill {
+  height: 100%;
+  background: var(--signal);
+  transition: width 300ms ease;
+}
+
+.scoreMeta {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.scoreMeta strong {
+  color: var(--text);
+}
+
+.actionBox,
+.questionBox {
+  border-top: 1px solid var(--line);
+  margin-top: 34px;
+  padding-top: 25px;
+}
+
+.actionBox strong {
+  display: block;
+  color: var(--signal);
+  font-size: 24px;
+  margin-top: 12px;
+  letter-spacing: -0.03em;
+}
+
+.questionBox p {
+  color: #c7ccc8;
+  line-height: 1.55;
+  font-size: 14px;
+}
+
+.lowerGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid var(--line);
+}
+
+.dataPanel {
+  padding: 32px 32px 32px 0;
+  border-right: 1px solid var(--line);
+}
+
+.pipelinePanel {
+  padding: 32px 0 32px 32px;
+}
+
+.compact {
+  align-items: center;
+}
+
+.completion {
+  color: var(--signal);
+  font-size: 9px;
+  letter-spacing: 0.13em;
+  font-weight: 900;
+}
+
+.fields {
+  margin-top: 28px;
+}
+
+.fieldRow {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 20px;
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+}
+
+.fieldRow span {
+  color: var(--muted);
+}
+
+.fieldRow strong {
+  font-weight: 500;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.missing {
+  color: var(--danger);
+}
+
+.pipeline {
+  margin-top: 26px;
+}
+
+.pipelineStep {
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  gap: 12px;
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+  opacity: 0.35;
+}
+
+.pipelineActive {
+  opacity: 1;
+}
+
+.stepNumber {
+  color: var(--muted);
+  font-size: 9px;
+  padding-top: 3px;
+}
+
+.stepTitle {
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.pipelineActive .stepTitle {
+  color: var(--signal);
+}
+
+.stepDescription {
+  color: var(--muted);
+  font-size: 10px;
+  margin-top: 4px;
+}
+
+.check {
+  color: var(--signal);
+}
+
+footer {
+  min-height: 85px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #4f5651;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+}
+
+@media (max-width: 1000px) {
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 35px;
+    padding: 60px 0;
+  }
+
+  .heroStats {
+    margin-bottom: 30px;
+  }
+
+  .workspace,
+  .lowerGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .conversationPanel,
+  .dataPanel {
+    border-right: 0;
+    padding-right: 0;
+  }
+
+  .intelligencePanel,
+  .pipelinePanel {
+    padding-left: 0;
+    border-top: 1px solid var(--line);
+  }
+}
+
+@media (max-width: 650px) {
+  .shell {
+    padding: 0 16px 28px;
+  }
+
+  .hero {
+    min-height: auto;
+  }
+
+  .hero h1 {
+    font-size: 43px;
+  }
+
+  .heroStats {
+    grid-template-columns: 1fr;
+  }
+
+  .metric {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .metric:last-child {
+    border-bottom: 0;
+  }
+
+  .money {
+    font-size: 60px;
+  }
+
+  .composer button {
+    width: 100px;
+  }
+
+  footer {
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+  }
+}
+
+
+/* ==========================================================
+   8LABS VISUAL SYSTEM — RUNTIME OVERRIDES
+   ========================================================== */
+
+html,
+body {
+  background: #070909 !important;
+  color: #f2f5f3 !important;
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(
+      circle at 78% 4%,
+      rgba(167, 255, 79, 0.08),
+      transparent 32rem
+    ),
+    #070909 !important;
+}
+
+.shell {
+  background: transparent;
+  color: #f2f5f3;
+}
+
+.topbar {
+  border-color: rgba(255,255,255,0.09);
+}
+
+.brand,
+.hero h1,
+.panelHeader h2,
+.pipelinePanel h2,
+.emptyConversation h3 {
+  color: #f2f5f3;
+}
+
+.mark,
+.systemStatus,
+.hero h1 span,
+.completion {
+  color: #a7ff4f;
+}
+
+.mark {
+  border-color: #a7ff4f;
+}
+
+.productName,
+.eyebrow,
+.hero p,
+.metricDetail,
+.moneyLabel,
+.scoreMeta,
+.fieldRow span,
+.stepNumber,
+.stepDescription {
+  color: #737b76;
+}
+
+.heroStats {
+  background: rgba(11,14,13,0.72);
+  border-color: rgba(255,255,255,0.09);
+}
+
+.metric {
+  border-color: rgba(255,255,255,0.09);
+}
+
+.workspace,
+.lowerGrid {
+  border-color: rgba(255,255,255,0.09);
+}
+
+.conversationPanel,
+.dataPanel {
+  border-color: rgba(255,255,255,0.09);
+}
+
+.intelligencePanel,
+.pipelinePanel {
+  background: rgba(11,14,13,0.28);
+}
+
+.emptyConversation p {
+  color: #737b76;
+}
+
+.scenarioRow button,
+.ghostButton {
+  background: #0b0e0d;
+  color: #aab0ac;
+  border-color: rgba(255,255,255,0.09);
+}
+
+.scenarioRow button:hover,
+.ghostButton:hover {
+  border-color: #a7ff4f;
+  color: #a7ff4f;
+}
+
+.composer {
+  background: #0b0e0d;
+  border-color: rgba(255,255,255,0.12);
+}
+
+.composer input {
+  background: transparent;
+  color: #f2f5f3;
+}
+
+.composer button {
+  background: #a7ff4f;
+  color: #091006;
+}
+
+.message.customer {
+  background: #101412;
+  color: #f2f5f3;
+}
+
+.message.agent {
+  background: rgba(167,255,79,0.12);
+  color: #f2f5f3;
+}
+
+.money,
+.metricValue {
+  color: #f2f5f3;
+}
+
+.actionBox strong {
+  color: #a7ff4f;
+}
+
+.questionBox p {
+  color: #c7ccc8;
+}
+
+.fieldRow {
+  border-color: rgba(255,255,255,0.09);
+}
+
+.fieldRow strong {
+  color: #f2f5f3;
+}
+
+.fieldRow strong.missing {
+  color: #ff654f;
+}
+
+.pipelineStep {
+  border-color: rgba(255,255,255,0.09);
+}
+
+.pipelineActive .stepTitle {
+  color: #a7ff4f;
+}
+
+.scoreTrack {
+  background: #202522;
+}
+
+.scoreFill {
+  background: #a7ff4f;
+}
+
+footer {
+  border-color: rgba(255,255,255,0.09);
+  color: #4f5651;
+}
+
