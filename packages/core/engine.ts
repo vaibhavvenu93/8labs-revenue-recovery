@@ -1,6 +1,7 @@
 ﻿import {
   CustomerInput,
-  RevenueLead
+  RevenueLead,
+  Urgency
 } from "./types";
 
 import {
@@ -19,11 +20,38 @@ import {
   determineNextQuestion
 } from "./next-question";
 
-
 function now(): string {
   return new Date().toISOString();
 }
 
+const urgencyRank: Record<Urgency, number> = {
+  unknown: 0,
+  routine: 1,
+  urgent: 2,
+  emergency: 3
+};
+
+function strongestUrgency(
+  current: Urgency,
+  candidate: Urgency
+): Urgency {
+  return urgencyRank[candidate] >
+    urgencyRank[current]
+    ? candidate
+    : current;
+}
+
+function accumulatedCustomerText(
+  lead: RevenueLead
+): string {
+  return lead.conversation.messages
+    .filter(
+      (message) =>
+        message.role === "customer"
+    )
+    .map((message) => message.text)
+    .join(" ");
+}
 
 export function createPlumbingLead(
   id: string,
@@ -33,10 +61,8 @@ export function createPlumbingLead(
 
   return {
     id,
-
     vertical: "plumber",
     channel,
-
     stage: "new",
     urgency: "unknown",
 
@@ -66,7 +92,6 @@ export function createPlumbingLead(
     updatedAt: timestamp
   };
 }
-
 
 export function processPlumbingMessage(
   currentLead: RevenueLead,
@@ -110,29 +135,49 @@ export function processPlumbingMessage(
     lead.job.problem = input.message;
   }
 
-  const activeDamage =
+  const extractedActiveDamage =
     detectActiveDamage(input.message);
 
-  if (activeDamage !== undefined) {
+  if (
+    extractedActiveDamage !== undefined
+  ) {
     lead.job.activeDamage =
-      activeDamage;
+      extractedActiveDamage;
   }
 
-  // ------------------------------------------------
-  // SAFETY OVERRIDES EVERYTHING
-  // ------------------------------------------------
+  const conversationText =
+    accumulatedCustomerText(lead);
 
   const safety =
-    checkPlumbingSafety(input.message);
+    checkPlumbingSafety(conversationText);
 
-  if (safety.emergencyServicesRequired) {
+  if (
+    safety.emergencyServicesRequired
+  ) {
     lead.safety = safety;
 
     lead.stage = "escalated";
+
     lead.urgency = "emergency";
-    lead.action = "emergency_services";
+
+    lead.action =
+      "emergency_services";
 
     lead.commercial.score = 100;
+
+    lead.commercial.estimatedValueGBP =
+      Math.max(
+        lead.commercial
+          .estimatedValueGBP,
+        300
+      );
+
+    lead.commercial.revenueAtRiskGBP =
+      Math.max(
+        lead.commercial
+          .revenueAtRiskGBP,
+        300
+      );
 
     lead.conversation.nextQuestion =
       undefined;
@@ -140,16 +185,9 @@ export function processPlumbingMessage(
     return lead;
   }
 
-  // ------------------------------------------------
-  // COMMERCIAL QUALIFICATION
-  // ------------------------------------------------
-
   const qualification =
     qualifyPlumbingLead(
-      [
-        lead.job.problem ?? "",
-        input.message
-      ].join(" "),
+      conversationText,
       lead.customer.postcode,
       lead.customer.phone,
       {
@@ -158,31 +196,46 @@ export function processPlumbingMessage(
       }
     );
 
-  lead.urgency =
-    qualification.urgency;
+  const resolvedUrgency =
+    strongestUrgency(
+      lead.urgency,
+      qualification.urgency
+    );
+
+  lead.urgency = resolvedUrgency;
 
   lead.commercial.score =
-    qualification.score;
+    Math.max(
+      lead.commercial.score,
+      qualification.score
+    );
 
   lead.commercial.estimatedValueGBP =
-    qualification.estimatedValueGBP ?? 0;
+    Math.max(
+      lead.commercial
+        .estimatedValueGBP,
+      qualification
+        .estimatedValueGBP ?? 0
+    );
 
   lead.commercial.revenueAtRiskGBP =
-    qualification.estimatedValueGBP ?? 0;
-
-  // ------------------------------------------------
-  // DETERMINE NEXT QUESTION
-  // ------------------------------------------------
+    Math.max(
+      lead.commercial
+        .revenueAtRiskGBP,
+      qualification
+        .estimatedValueGBP ?? 0
+    );
 
   lead.conversation.nextQuestion =
     determineNextQuestion(lead);
 
-  if (lead.conversation.nextQuestion) {
+  if (
+    lead.conversation.nextQuestion
+  ) {
     lead.stage = "qualifying";
 
     if (
-      qualification.recommendedAction ===
-      "call_now"
+      lead.urgency === "emergency"
     ) {
       lead.action = "call_now";
     } else {
@@ -192,18 +245,12 @@ export function processPlumbingMessage(
     return lead;
   }
 
-  // ------------------------------------------------
-  // LEAD IS COMPLETE
-  // ------------------------------------------------
-
   lead.stage = "ready_to_book";
 
   lead.action =
-    qualification.recommendedAction ===
-    "call_now"
+    lead.urgency === "emergency"
       ? "call_now"
       : "book";
 
   return lead;
 }
-

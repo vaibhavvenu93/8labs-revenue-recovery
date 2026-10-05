@@ -9,7 +9,6 @@ import {
   processPlumbingMessage
 } from "../packages/core/engine";
 
-
 describe(
   "8Labs Revenue Recovery Engine",
   () => {
@@ -112,11 +111,44 @@ describe(
 
 
     it(
-      "builds the lead across multiple turns",
+      "extracts an explicit negative active leak answer",
       () => {
         let lead =
           createPlumbingLead(
             "lead-004"
+          );
+
+        lead =
+          processPlumbingMessage(
+            lead,
+            {
+              message:
+                "My boiler is broken"
+            }
+          );
+
+        lead =
+          processPlumbingMessage(
+            lead,
+            {
+              message:
+                "There is no active leak"
+            }
+          );
+
+        expect(
+          lead.job.activeDamage
+        ).toBe(false);
+      }
+    );
+
+
+    it(
+      "builds the lead across multiple turns without manual state mutation",
+      () => {
+        let lead =
+          createPlumbingLead(
+            "lead-005"
           );
 
         lead =
@@ -147,9 +179,6 @@ describe(
                 "There is no active leak"
             }
           );
-
-        lead.job.activeDamage =
-          false;
 
         lead =
           processPlumbingMessage(
@@ -184,21 +213,31 @@ describe(
             }
           );
 
-        expect(lead.customer.name)
-          .toBe("Sarah");
+        expect(
+          lead.customer.name
+        ).toBe("Sarah");
 
-        expect(lead.customer.postcode)
-          .toBe("M20 4BX");
+        expect(
+          lead.customer.postcode
+        ).toBe("M20 4BX");
 
-        expect(lead.customer.phone)
-          .toBe("07700900123");
+        expect(
+          lead.customer.phone
+        ).toBe("07700900123");
+
+        expect(
+          lead.job.activeDamage
+        ).toBe(false);
 
         expect(
           lead.job.preferredTime
-        ).toBe("tomorrow morning");
+        ).toBe(
+          "tomorrow morning"
+        );
 
         expect(
-          lead.conversation.nextQuestion
+          lead.conversation
+            .nextQuestion
         ).toBeUndefined();
 
         expect(lead.stage)
@@ -211,11 +250,101 @@ describe(
 
 
     it(
+      "preserves urgent intent across unrelated later messages",
+      () => {
+        let lead =
+          createPlumbingLead(
+            "lead-006"
+          );
+
+        lead =
+          processPlumbingMessage(
+            lead,
+            {
+              message:
+                "My boiler has stopped working and we have no heating"
+            }
+          );
+
+        expect(lead.urgency)
+          .toBe("urgent");
+
+        expect(
+          lead.commercial.revenueAtRiskGBP
+        ).toBe(180);
+
+        lead =
+          processPlumbingMessage(
+            lead,
+            {
+              message:
+                "M20 4BX",
+              postcode:
+                "M20 4BX"
+            }
+          );
+
+        expect(lead.urgency)
+          .toBe("urgent");
+
+        expect(
+          lead.commercial.revenueAtRiskGBP
+        ).toBe(180);
+      }
+    );
+
+
+    it(
+      "never downgrades an emergency after later routine text",
+      () => {
+        let lead =
+          createPlumbingLead(
+            "lead-007"
+          );
+
+        lead =
+          processPlumbingMessage(
+            lead,
+            {
+              message:
+                "A pipe has burst and water is everywhere"
+            }
+          );
+
+        lead =
+          processPlumbingMessage(
+            lead,
+            {
+              message:
+                "My postcode is SW18 2AB",
+              postcode:
+                "SW18 2AB"
+            }
+          );
+
+        expect(lead.urgency)
+          .toBe("emergency");
+
+        expect(
+          lead.commercial.score
+        ).toBe(100);
+
+        expect(
+          lead.commercial.revenueAtRiskGBP
+        ).toBe(300);
+
+        expect(lead.action)
+          .toBe("call_now");
+      }
+    );
+
+
+    it(
       "escalates gas emergencies instead of continuing sales qualification",
       () => {
         let lead =
           createPlumbingLead(
-            "lead-005"
+            "lead-008"
           );
 
         lead =
@@ -228,7 +357,8 @@ describe(
           );
 
         expect(
-          lead.safety.emergencyServicesRequired
+          lead.safety
+            .emergencyServicesRequired
         ).toBe(true);
 
         expect(lead.stage)
@@ -240,8 +370,56 @@ describe(
           );
 
         expect(
-          lead.conversation.nextQuestion
+          lead.conversation
+            .nextQuestion
         ).toBeUndefined();
+      }
+    );
+
+
+    it(
+      "safety escalation remains dominant on later messages",
+      () => {
+        let lead =
+          createPlumbingLead(
+            "lead-009"
+          );
+
+        lead =
+          processPlumbingMessage(
+            lead,
+            {
+              message:
+                "I can smell gas near the boiler"
+            }
+          );
+
+        lead =
+          processPlumbingMessage(
+            lead,
+            {
+              message:
+                "My postcode is M20 4BX",
+              postcode:
+                "M20 4BX"
+            }
+          );
+
+        expect(
+          lead.safety
+            .emergencyServicesRequired
+        ).toBe(true);
+
+        expect(lead.urgency)
+          .toBe("emergency");
+
+        expect(lead.action)
+          .toBe(
+            "emergency_services"
+          );
+
+        expect(lead.stage)
+          .toBe("escalated");
       }
     );
 
